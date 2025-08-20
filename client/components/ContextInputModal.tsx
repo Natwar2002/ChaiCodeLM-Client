@@ -27,7 +27,7 @@ interface ContextInputModalProps {
 
 interface ContextSource {
   id: string;
-  type: "text" | "pdf" | "csv" | "pptx" | "doc" | "docx" | "json" | "url" | "youtube";
+  type: "text" | "pdf" | "csv" | "pptx" | "doc" | "docx" | "json" | "website" | "youtube";
   name: string;
   content: string | File;
   status: "processing" | "success" | "error";
@@ -145,7 +145,7 @@ export function ContextInputModal({ open, onOpenChange, onContextChange }: Conte
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         addSource({
-          type: selectedType === "youtube" ? "youtube" : "url",
+          type: selectedType === "youtube" ? "youtube" : "website",
           name: selectedType === "youtube" ? `YouTube: ${new URL(value).hostname}` : new URL(value).hostname,
           content: extractedContent,
           status: "processing",
@@ -205,13 +205,22 @@ export function ContextInputModal({ open, onOpenChange, onContextChange }: Conte
       console.log('Uploading data to index', sources);
       setShowProccessing(true);
       async function call() {
-        const res = await indexData({ source: sources[0].content, type: sources[0].type });
-        toast({
-          title: "Content added!",
-          description: "content processed successfully.",
-          variant: "default"
-        });
-        console.log(res);
+        try {
+          console.log(sources[0]);
+          const res = await indexData({ source: sources[0].content, type: sources[0].type });
+          toast({
+            title: "Content added!",
+            description: "content processed successfully.",
+            variant: "default"
+          });
+          console.log(res);
+        } catch (error) {
+          toast({
+            title: "Error!",
+            description: "Error in adding content!",
+            variant: "default"
+          });
+        }
         timer = setTimeout(() => {
           onOpenChange(false);
           setSources([]);
