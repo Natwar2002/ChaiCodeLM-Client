@@ -123,7 +123,7 @@ export function ChatInterface({ context }: ChatInterfaceProps) {
         break;
     }
 
-    const fullResponse = `${personalizedResponse}\n\nContext reference: "${context.slice(0, 100)}${context.length > 100 ? '...' : ''}"`;
+    const fullResponse = `${personalizedResponse}`;
 
     const streamingMsg: Message = {
       id: Date.now().toString(),
